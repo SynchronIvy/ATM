@@ -1,32 +1,37 @@
-const ATMDeposit = ( {onChange}) => {
+const ATMDeposit = ( {onChange, isDeposit}) => {
+  const choice = ["Deposit", "Withdrawal"];
   return (
     <label className="label huge">
-      Deposit:
-      <input type="number" onChange={onChange}></input>
-      <input type="submit" value = "submit"></input>
+      <h3> {choice[Number(!isDeposit)]}</h3>
+      <input type="number" width="200" onChange={onChange}></input>
+      <input type="submit" width="200" value = "Submit"></input>
     </label>
   );
 };
 
 const Account = () => {
-  let transactionState = 0; // state of this transaction
+  let deposit = 0; // state of this transaction
   const [totalState, setTotalState] = React.useState(0); // Account total at Bank
+  const [isDeposit, setIsDeposit] = React.useState(true);
   let status = `Account Balance $ ${totalState}`;
-  console.log("Account rendered");
+  //console.log("Account rendered");
   const handleChange = event => {
     console.log(`handleChange ${event.target.value}`);
-    transactionState = Number(event.target.value);
+    deposit = Number(event.target.value);
   };
-  const [accountState, setAccountState] = React.useState(0);
-  const handleSubmit = event => {
-    setTotalState(totalState + transactionState);
+
+  const handleSubmit = () => {
+    let newTotal = isDeposit ? totalState + deposit: totalState - deposit;
+    setTotalState(newTotal);
     event.preventDefault();
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 id="total">Account Balance {status}</h2>
-      <ATMDeposit onChange={handleChange}> Deposit</ATMDeposit>
+      <h2 id="total">{status}</h2>
+      <button onClick={() => setIsDeposit(true)}>Deposit</button>
+      <button onClick={() => setIsDeposit(false)}>Withdrawal</button>
+      <ATMDeposit onChange={handleChange} isDeposit={isDeposit}></ATMDeposit>
     </form>
   );
 };
